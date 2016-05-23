@@ -1,12 +1,14 @@
-import time
-
+#! coding: utf8
 __author__ = 'lvziwen'
+import time
 from flask import Flask
 from flask import request
 from modules import Student, Session
 import simplejson as json
+from tools import get_uid_by_token
 app = Flask(__name__)
 session = Session()
+
 
 @app.route("/sign_up")
 def sign_up():
@@ -32,4 +34,49 @@ def sign_up():
     result['s'] = 1
     result['m'] = "注册成功"
     return json.dumps(result)
+
+
+@app.route("/user/info_add")
+def user_info_add():
+    if request.method == "GET":
+        parm_dict = request.args
+    elif request.method == "POST":
+        parm_dict = request.form
+
+    school = parm_dict.get("school")
+    academy = parm_dict.get("academy")
+    major = parm_dict.get("major")
+    age = parm_dict.get("age")
+    gender = parm_dict.get("gender")
+    email = parm_dict.get("email")
+    qq = parm_dict.get("qq")
+    token = parm_dict.get("token")
+
+    result = {}
+    user_id = get_uid_by_token(token)
+    if not user_id:
+        result['s'] = 0
+        result['m'] = "登录过期，请重新登录"
+        return json.dumps(result)
+
+    student = session.query(Student).filter(Student.id==user_id).one()
+    if not student:
+        result['s'] = 0
+        result['m'] = "帐号不存在"
+        return json.dumps(result)
+
+    student.school = school
+    student.academy = academy
+    student.major = major
+    student.age = age
+    student.gender = gender
+    student.email = email
+    student.qq_num = qq
+    session.add(student)
+    session.commit()
+
+    result['s'] = 1
+    result['m'] = "更新用户信息成功"
+    return json.dumps(result)
+
 
