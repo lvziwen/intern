@@ -22,4 +22,5 @@ class Student(Base):
     qq_num = Column(String(32))
     school = Column(String(64))
     academy = Column(String(64))
+    major = Column(String(64))
     sign_up_time = Column(Integer)
