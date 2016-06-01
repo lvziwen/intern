@@ -3,7 +3,7 @@ __author__ = 'lvziwen'
 import time
 from flask import Flask
 from flask import request
-from modules import Student, Session
+from modules import Student, Session, Enterprise
 import simplejson as json
 from tools import get_uid_by_token
 app = Flask(__name__)
@@ -80,3 +80,30 @@ def user_info_add():
     return json.dumps(result)
 
 
+@app.route("/enterprise/sign_up")
+def enterprise_sign_up():
+    if request.method == "GET":
+        parm_dict = request.args
+    elif request.method == "POST":
+        parm_dict = request.form
+
+    result = {}
+
+    name = parm_dict.get("name")
+    industry = parm_dict.get("industry")
+    description = parm_dict.get("description")
+    email = parm_dict.get("email")
+
+    if not name or not industry or not description:
+        result['s'] = 0
+        result['m'] = "参数错误"
+        return json.dumps(result)
+    now = int(time.time())
+    enterprise = Enterprise(name=name, industry=industry, description=description, sign_up_time=now, update_time=now,
+                            email=email)
+    session.add(enterprise)
+    session.commit()
+
+    result['s'] = 1
+    result['m'] = "企业注册成功"
+    return json.dumps(result)

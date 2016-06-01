@@ -24,3 +24,13 @@ class Student(Base):
     academy = Column(String(64))
     major = Column(String(64))
     sign_up_time = Column(Integer)
+    update_time = Column(Integer)
+
+
+class Enterprise(Base):
+    id = Column(Integer, primary_key=True)
+    name = Column(String(256))
+    industry = Column(String(256))
+    email = Column(String(256))
+    sign_up_time = Column(Integer)
+    update_time = Column(Integer)
