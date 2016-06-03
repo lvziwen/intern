@@ -34,3 +34,10 @@ class Enterprise(Base):
     email = Column(String(256))
     sign_up_time = Column(Integer)
     update_time = Column(Integer)
+
+
+class PhoneKey(Base):
+    id = Column(String(11), primary_key=True)
+    user_id = Column(Integer)
+
+
